@@ -22,7 +22,7 @@ Terran_State_Estimator::Terran_State_Estimator()
   }
 }
 
-bool enemyWorkerCalculation()
+bool Terran_State_Estimator::enemyWorkerCalculation()
 {
   int enemy_expansions = 0;
   
@@ -42,7 +42,7 @@ bool enemyWorkerCalculation()
   return false;//returning false means the calculation could not be completed
 }
 
-bool enemyMilitaryCalculation()
+bool Terran_State_Estimator::enemyMilitaryCalculation()
 {
   //oberve enemy military units and note the resource cost of those units as a baseline.
   //remember that killed units should reduce this number
@@ -51,7 +51,7 @@ bool enemyMilitaryCalculation()
   return false;//returning false means the calculation could not be completed
 }
 
-bool enemyBuildingCalcuation()
+bool Terran_State_Estimator::enemyBuildingCalcuation()
 {
   //observed_building_resources is the sum of resources necessary to construct observed buildings
   //estimated_enemy_buildg_resources is based on an estimation of enemy supply, and how fast they're producing units, and 
@@ -59,14 +59,14 @@ bool enemyBuildingCalcuation()
   return false;//returning false means the calculation could not be completed
 }
 
-bool enemyUpgradeResourcesCalcuation()
+bool Terran_State_Estimator::enemyUpgradeResourcesCalcuation()
 {
   //look through enemy units and check for upgrades. This counts as observed_upgrade_resources
   //estimated_upgrade_resources == observed_upgrade resources unless there is a pattern
   return false;//returning false means the calculation could not be completed
 }
 
-bool enemyResourceCalcuation()
+bool Terran_State_Estimator::enemyResourceCalcuation()
 {
   int frame = BWAPI::Broodwar->getFrameCount();
 	int seconds = frame / 24;
@@ -77,7 +77,7 @@ bool enemyResourceCalcuation()
   return false;//returning false means the calculation could not be completed
 }
 
-bool enemySupplyCalcuation()
+bool Terran_State_Estimator::enemySupplyCalcuation()
 {
   //look through known enemy buildings and count the number of supply depots (+8) and Command Centers (+10 supply)
   //only consider this to be an exhaustive list if the entire area has been scounted AND expansions have been checked for
