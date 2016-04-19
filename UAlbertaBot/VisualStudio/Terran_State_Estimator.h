@@ -25,7 +25,7 @@ namespace UAlbertaBot
 	double observed_enemy_supply;
 	double estimated_enemy_supply;//calculated via enemySupplyCalcuation();
 
-	class PotentialEnemy
+	class Terran_State_Estimator
 	{
 		BWAPI::Race					    _selfRace;
 		BWAPI::Race					    _enemyRace;
