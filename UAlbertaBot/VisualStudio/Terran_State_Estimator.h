@@ -5,22 +5,25 @@
 
 namespace UAlbertaBot
 {
-	int worker_count;
-	double worker_error;
+	int worker_count = 0;
+	double estimated_enemy_worker_count; //calculated via enemyWorkerCalculation();
+	
 	double military_resource_estimation;
-	double military_resource_estimation_error;
-	WA
-	double PotentialEnemyData[18];//contains doubles indicating different potential enemy values.
-	//values are in pairs: [0] is a lower bound; [1] is an upper bound
-	//data stored: 0/1 contain potential maximum resource totals gathered over lifetime
-	//2/3 contain resources spent on workers
-	//4/5 contain resources spent on military
-	//6/7 contain resources spent on buildings
-	//8/9 contains resources spent on upgrades
-	//10/11 contains a more reasonable guess about enemy's current resource totals based on scouting
-	//12/13 contains a guess of enemy resources on hand (not spent yet) based on 10/11 totals
-	//14/15 contains estimated gas on hand
-	//16/17 contains potential supply
+	double military_resource_estimation_error;//calculated via enemyMilitaryCalculation();
+	
+	double observed_building_resources;
+	double estimated_enemy_building_resources;//calculated via enemyBuildingCalcuation();
+	
+	double observed_upgrade_resources;
+	double estimated_upgrade_resources;//calculated via enemyUpgradeResourcesCalcuation();
+	
+	double estimated_enemy_minerals_on_hand;
+	double estimated_enemy_gas_on_hand;
+	double estimated_total_enemy_minerals_mined;
+	double estimated_total_enemy_gas_mined;//calculated via enemyResourceCalcuation();
+	
+	double observed_enemy_supply;
+	double estimated_enemy_supply;//calculated via enemySupplyCalcuation();
 
 	class PotentialEnemy
 	{
@@ -28,11 +31,12 @@ namespace UAlbertaBot
 		BWAPI::Race					    _enemyRace;
 
 	public:
-		PotentialEnemy();
-		double							*calculatePotentialEnemy();
-		double							*protossPotentialEnemy();
-		double							*terranPotentialEnemy();
-		double							*zergPotentialEnemy();
+		bool enemyWorkerCalculation();
+		bool enemyMilitaryCalculation();
+		bool enemyBuildingCalcuation();
+		bool enemyUpgradeResourcesCalcuation();
+		bool enemyResourceCalcuation(); //includes resources on hand calculation
+		bool enemySupplyCalcuation();
 	};
 
 }
