@@ -20,11 +20,16 @@ namespace UAlbertaBot
     		double minerals_on_hand;
     		double gas_on_hand;
     
-    		double oberved_enemy_supply;
+    		double supply;
+    		
+    		std::vector<BWAPI::Unit> Unit_List;
+    		std::vector<BWAPI::Unit> Building_List;
+    		std::vector<BWAPI::Unit> Unit_List;
     
 	public:
-		Update();
-		WriteData();
+		void Update();
+		void WriteData();
+		bool AlreadyNoted(BWAPI::Unit);
 	};
 
 }
