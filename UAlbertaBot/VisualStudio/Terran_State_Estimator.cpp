@@ -1,5 +1,5 @@
 #include "Common.h"
-#include "PotentialEnemy.h"
+#include "Terran_State_Estimator.h"
 #include "UnitUtil.h"
 
 using namespace UAlbertaBot;
@@ -18,7 +18,7 @@ Terran_State_Estimator::Terran_State_Estimator()
     if (a==1)
       cout << "Enemy Race is not Terran";
     else
-      cout << "Our race is not terran
+      cout << "Our race is not terran";
   }
 }
 
@@ -30,7 +30,8 @@ bool Terran_State_Estimator::enemyWorkerCalculation()
 	int seconds = frame / 24;
 	int minutes = seconds / 60;
 	
-	int estimated_enemy_worker_count = 5 + (seconds / 20) + enemy_expansions * (seconds / 20); //if they don't rush and none have been killed this should be a good figure
+	int estimated_enemy_worker_count = 5 + (seconds / 20) + enemy_expansions * (seconds / 20); 
+	//if they don't rush and none have been killed this should be a good estimation
 	
 	//figuring out the worker count requires two things:
 	//1. seeing the workers and noting where they are
