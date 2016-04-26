@@ -26,6 +26,19 @@ namespace UAlbertaBot
     		std::vector<BWAPI::Unit> Building_List;
 			static BWAPI::Unitset Military_Unit_List;
 
+			static int previous_enemy_worker_count;//
+			static int previous_enemy_gas_count;
+			static int previous_enemy_mineral_count;
+			static int previous_enemy_military_minerals_spent;//
+			static int previous_enemy_military_gas_spent;//
+			static int previous_enemy_supply_used;//
+			static int previous_enemy_upgrade_minerals_spent;//
+			static int previous_enemy_upgrade_gas_spent;//
+			static int previous_enemy_building_minerals_spent;//
+			static int previous_enemy_minerals_on_hand;
+			static int previous_enemy_gas_on_hand;
+			static int previous_enemy_supply_total;//
+
 			AnalysisData();
     
 	public:
@@ -42,6 +55,7 @@ namespace UAlbertaBot
 		void updateMilitary_Unit_List(BWAPI::Unitset unit);
 
 		void writeScoutData();
+		void updateScoutData();
 	};
 
 }

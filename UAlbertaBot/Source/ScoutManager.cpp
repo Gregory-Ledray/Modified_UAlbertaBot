@@ -1,5 +1,6 @@
 #include "ScoutManager.h"
 #include "ProductionManager.h"
+#include "AnalysisData.h"
 
 using namespace UAlbertaBot;
 
