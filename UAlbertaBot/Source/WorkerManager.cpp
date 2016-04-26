@@ -1,6 +1,7 @@
 #include "Common.h"
 #include "WorkerManager.h"
 #include "Micro.h"
+#include "AnalysisData.h"
 
 using namespace UAlbertaBot;
 
@@ -33,6 +34,10 @@ void WorkerManager::update()
 
 void WorkerManager::updateWorkerStatus() 
 {
+	int count = 0;
+	int gascount = 0;
+	int mineralcount = 0;
+
 	// for each of our Workers
 	for (auto & worker : workerData.getWorkers())
 	{
@@ -60,8 +65,15 @@ void WorkerManager::updateWorkerStatus()
 			{
 				setMineralWorker(worker);
 			}
+			gascount++;
 		}
+		else if (workerData.getWorkerJob(worker) == WorkerData::Minerals)
+		{
+			mineralcount++;
+		}
+		++count;
 	}
+	AnalysisData::Instance().workerInfo(count, mineralcount, gascount);
 }
 
 void WorkerManager::setRepairWorker(BWAPI::Unit worker, BWAPI::Unit unitToRepair)

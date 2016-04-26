@@ -1,4 +1,5 @@
 #include "ProductionManager.h"
+#include "AnalysisData.h"
 
 using namespace UAlbertaBot;
 
@@ -359,18 +360,26 @@ void ProductionManager::create(BWAPI::Unit producer, BuildOrderItem & item)
         // if not, train the unit
         } 
         else 
-        {
+        {	
+			//distinguish between mil and econ units; make sure functions called only once
+			//4-25-16: this works for mil units but not workers for some reason
+			if (!(t.getUnitType() == BWAPI::UnitTypes::Terran_SCV))
+			{
+				AnalysisData::Instance().unitBuildInfo(t.getUnitType().mineralPrice(), t.getUnitType().gasPrice());
+			}
             producer->train(t.getUnitType());
         }
     }
     // if we're dealing with a tech research
     else if (t.isTech())
     {
+		AnalysisData::Instance().techAndUpgradeInfo(t.getTechType().mineralPrice(), t.getTechType().gasPrice());
         producer->research(t.getTechType());
-    }
+	}
     else if (t.isUpgrade())
     {
         //Logger::Instance().log("Produce Upgrade: " + t.getName() + "\n");
+		AnalysisData::Instance().techAndUpgradeInfo(t.getTechType().mineralPrice(), t.getTechType().gasPrice());
         producer->upgrade(t.getUpgradeType());
     }
     else

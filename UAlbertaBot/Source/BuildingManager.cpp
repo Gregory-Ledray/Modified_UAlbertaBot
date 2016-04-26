@@ -2,6 +2,7 @@
 #include "BuildingManager.h"
 #include "Micro.h"
 #include "ScoutManager.h"
+#include "AnalysisData.h"
 
 using namespace UAlbertaBot;
 
@@ -178,6 +179,7 @@ void BuildingManager::checkForStartedConstruction()
             if (b.finalPosition == buildingStarted->getTilePosition())
             {
                 // the resources should now be spent, so unreserve them
+				AnalysisData::Instance().buildInfo(_reservedMinerals, _reservedGas);
                 _reservedMinerals -= buildingStarted->getType().mineralPrice();
                 _reservedGas      -= buildingStarted->getType().gasPrice();
 
@@ -268,7 +270,7 @@ bool BuildingManager::isEvolvedBuilding(BWAPI::UnitType type)
         type == BWAPI::UnitTypes::Zerg_Spore_Colony ||
         type == BWAPI::UnitTypes::Zerg_Lair ||
         type == BWAPI::UnitTypes::Zerg_Hive ||
-        type == BWAPI::UnitTypes::Zerg_Greater_Spire)
+		type == BWAPI::UnitTypes::Zerg_Greater_Spire)
     {
         return true;
     }

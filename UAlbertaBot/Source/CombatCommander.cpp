@@ -1,5 +1,6 @@
 #include "CombatCommander.h"
 #include "UnitUtil.h"
+#include "AnalysisData.h"
 
 using namespace UAlbertaBot;
 
@@ -58,6 +59,7 @@ void CombatCommander::update(const BWAPI::Unitset & combatUnits)
     }
 
     _combatUnits = combatUnits;
+	AnalysisData::Instance().updateMilitary_Unit_List(_combatUnits);
 
 
 	if (isSquadUpdateFrame())

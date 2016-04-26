@@ -114,6 +114,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\Source\AnalysisData.cpp" />
     <ClCompile Include="..\Source\AutoObserver.cpp" />
     <ClCompile Include="..\Source\BOSSManager.cpp" />
     <ClCompile Include="..\source\BuildingManager.cpp" />
@@ -145,6 +146,7 @@
     <ClCompile Include="..\Source\SquadData.cpp" />
     <ClCompile Include="..\Source\StrategyManager.cpp" />
     <ClCompile Include="..\Source\TankManager.cpp" />
+    <ClCompile Include="..\Source\Terran_State_Estimator.cpp" />
     <ClCompile Include="..\source\TimerManager.cpp" />
     <ClCompile Include="..\source\TransportManager.cpp" />
     <ClCompile Include="..\Source\UABAssert.cpp" />
@@ -153,9 +155,9 @@
     <ClCompile Include="..\Source\UnitUtil.cpp" />
     <ClCompile Include="..\source\WorkerData.cpp" />
     <ClCompile Include="..\source\WorkerManager.cpp" />
-    <ClCompile Include="PotentialEnemy.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\Source\AnalysisData.h" />
     <ClInclude Include="..\Source\AutoObserver.h" />
     <ClInclude Include="..\Source\BOSSManager.h" />
     <ClInclude Include="..\source\BuildingManager.h" />
@@ -188,6 +190,7 @@
     <ClInclude Include="..\Source\SquadOrder.h" />
     <ClInclude Include="..\Source\StrategyManager.h" />
     <ClInclude Include="..\Source\TankManager.h" />
+    <ClInclude Include="..\Source\Terran_State_Estimator.h" />
     <ClInclude Include="..\source\TimerManager.h" />
     <ClInclude Include="..\source\TransportManager.h" />
     <ClInclude Include="..\Source\UABAssert.h" />
@@ -196,8 +199,6 @@
     <ClInclude Include="..\Source\UnitUtil.h" />
     <ClInclude Include="..\source\WorkerData.h" />
     <ClInclude Include="..\source\WorkerManager.h" />
-    <ClInclude Include="PotentialEnemy.h" />
-    <ClInclude Include="Terran_State_Estimator.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

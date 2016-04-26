@@ -153,8 +153,11 @@
     <ClCompile Include="..\Source\Logger.cpp">
       <Filter>util</Filter>
     </ClCompile>
-    <ClCompile Include="PotentialEnemy.cpp">
+    <ClCompile Include="..\Source\AnalysisData.cpp">
       <Filter>game\util</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Source\Terran_State_Estimator.cpp">
+      <Filter>game\macro</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -278,10 +281,10 @@
     <ClInclude Include="..\Source\Logger.h">
       <Filter>util</Filter>
     </ClInclude>
-    <ClInclude Include="PotentialEnemy.h">
+    <ClInclude Include="..\Source\AnalysisData.h">
       <Filter>game\util</Filter>
     </ClInclude>
-    <ClInclude Include="Terran_State_Estimator.h">
+    <ClInclude Include="..\Source\Terran_State_Estimator.h">
       <Filter>game\macro</Filter>
     </ClInclude>
   </ItemGroup>

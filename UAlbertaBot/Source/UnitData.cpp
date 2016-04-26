@@ -7,17 +7,18 @@ UnitData::UnitData()
 	: mineralsLost(0)
 	, gasLost(0)
 {
-	int maxTypeID(0);
+	int maxTypeID(0);//literally tells you the total number of units cause ids are assigned starting at 1
 	for (const BWAPI::UnitType & t : BWAPI::UnitTypes::allUnitTypes())
 	{
+		//if it's a new unit set maxtype id to this id since new units will have the largest ids
 		maxTypeID = maxTypeID > t.getID() ? maxTypeID : t.getID();
 	}
 
-	numDeadUnits	    = std::vector<int>(maxTypeID + 1, 0);
-	numUnits		    = std::vector<int>(maxTypeID + 1, 0);
+	numDeadUnits	    = std::vector<int>(maxTypeID + 1, 0);//array size is total number of units
+	numUnits		    = std::vector<int>(maxTypeID + 1, 0);//array size is total number of units
 }
 
-void UnitData::updateUnit(BWAPI::Unit unit)
+void UnitData::updateUnit(BWAPI::Unit unit)//this gives you data on every one of your units
 {
 	if (!unit) { return; }
 
