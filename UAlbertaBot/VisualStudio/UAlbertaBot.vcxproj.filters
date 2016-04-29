@@ -162,6 +162,9 @@
     <ClCompile Include="..\Source\ParticleModel.cpp">
       <Filter>game\macro</Filter>
     </ClCompile>
+    <ClCompile Include="..\Source\ProcessTextFiles.cpp">
+      <Filter>util</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -292,6 +295,9 @@
     </ClInclude>
     <ClInclude Include="..\Source\ParticleModel.h">
       <Filter>game\macro</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Source\ProcessTextFiles.h">
+      <Filter>util</Filter>
     </ClInclude>
   </ItemGroup>
 </Project>

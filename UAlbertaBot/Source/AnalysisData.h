@@ -60,7 +60,6 @@ namespace UAlbertaBot
 
 		void writeScoutData();
 		void updateScoutData();
-		void post_game_analysis();
 	};
 
 }

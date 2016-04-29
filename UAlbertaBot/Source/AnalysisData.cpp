@@ -8,6 +8,7 @@
 #include "WorkerManager.h"
 #include <ctime>
 #include "ParticleModel.h"
+#include "ProcessTextFiles.h"
 
 
 using namespace UAlbertaBot;
@@ -85,98 +86,10 @@ void AnalysisData::gameOver(bool win)
 	}
 	else UAB_ASSERT(true, "Couldn't open the scouting file at game termination\n");
 
-	post_game_analysis();
+	ProcessTextFiles::Instance().post_game_analysis();
 }
 
-void AnalysisData::post_game_analysis()
-{
-	std::vector<std::pair<int, int>> worker_count_aa;
-	std::vector<std::pair<int, int>> enemy_workers_on_minerals_aa;
-	std::vector<std::pair<int, int>> enemy_workers_on_gas_aa;
-	std::vector<std::pair<int, int>> military_minerals_spent_aa;
-	std::vector<std::pair<int, int>> military_gas_spent_aa;
-	std::vector<std::pair<int, int>> enemy_military_supply_used_aa;
-	std::vector<std::pair<int, int>> enemy_upgrade_minerals_spent_aa;
-	std::vector<std::pair<int, int>> enemy_upgrade_gas_spent_aa;
-	std::vector<std::pair<int, int>> enemy_building_minerals_spent_aa;
-	std::vector<std::pair<int, int>> enemy_minerals_on_hand_aa;
-	std::vector<std::pair<int, int>> enemy_gas_on_hand_aa;
-	std::vector<std::pair<int, int>> enemy_supply_total_aa;
 
-	int frame;
-
-	const char *path = "C:/Users/Gregory/Desktop/ualbertabot_2/scouting_data_out.txt";
-	std::ifstream scouting_data;
-	scouting_data.open(path, std::ifstream::in);
-	if (scouting_data.is_open())
-	{
-		scouting_data.seekg(0, scouting_data.beg);//start at the beginning
-		char input[42];
-		char out[10];
-		while (scouting_data.getline(input, 42) && input[0] != 'G')//while the game isn't over
-		{
-			scouting_data.getline(input, 42);
-			int x = 0;
-			for (int i = 14; i < 16 ; i++)
-			{
-				if (!std::isspace(input[i]))
-				{
-					out[x] = input[i];
-					x++;
-				}
-			}
-			int temp = atoi(out);
-
-			x = 0;
-			for (int i = 22; i < 35; i++)
-			{
-				if (!std::isspace(input[i]) && input[i] != NULL)
-				{
-					out[x] = input[i];
-					x++;
-				}
-			}
-			frame = atoi(out);
-			worker_count_aa.push_back(std::make_pair(temp, frame));
-		}
-		
-		
-		
-	}
-	scouting_data.close();
-	/*
-	data_file << "worker count: " + std::to_string(enemy_worker_count) + " frame: " + std::to_string(frame) + " \n";
-
-	int dead_worker_count = player->deadUnitCount(BWAPI::UnitTypes::Terran_SCV);
-	int enemy_workers_minerals_spent = 50 * (enemy_worker_count - 4 + dead_worker_count);
-	data_file << "workers minerals spent: " + std::to_string(enemy_workers_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "workers on minerals: " + std::to_string(enemy_workers_on_minerals) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "workers on gas: " + std::to_string(enemy_workers_on_gas) + " frame: " + std::to_string(frame) + " \n";
-
-	//military_minerals_spent = player->spentMinerals() + player->refundedMinerals() - upgrade_minerals_spent - building_minerals_spent;
-	data_file << "military minerals spent: " + std::to_string(enemy_military_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
-
-	//military_gas_spent = player->spentGas() + player->refundedGas() - workers_minerals_spent - upgrade_minerals_spent - building_gas_spent; //should be less than spentGas
-	data_file << "military gas spent: " + std::to_string(enemy_military_gas_spent) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "military unit supply used: " + std::to_string(enemy_supply_used - enemy_worker_count) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "upgrade minerals spent: " + std::to_string(enemy_upgrade_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "upgrade gas spent: " + std::to_string(enemy_upgrade_gas_spent) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "building minerals spent: " + std::to_string(enemy_building_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "minerals on hand: " + std::to_string(enemy_minerals_on_hand) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "gas on hand: " + std::to_string(enemy_gas_on_hand) + " frame: " + std::to_string(frame) + " \n";
-
-	data_file << "supply: " + std::to_string(enemy_supply_total / 2) + " frame: " + std::to_string(frame) + " \n\n\n";
-
-	*/
-}
 
 //aupdating the list of military units
 //called in line 62 of combatcommander
@@ -439,7 +352,9 @@ void AnalysisData::writeScoutData()
 
 		data_file << "gas on hand: " + std::to_string(enemy_gas_on_hand) + " frame: " + std::to_string(frame) + " \n";
 
-		data_file << "supply: " + std::to_string(enemy_supply_total / 2) + " frame: " + std::to_string(frame) + " \n\n\n";
+		data_file << "supply available: " + std::to_string(enemy_supply_total / 2) + " frame: " + std::to_string(frame) + " \n\n\n";
+
+		data_file << "supply used: " + std::to_string(enemy_supply_used) + " frame: " + std::to_string(frame) + "\n";
 
 		data_file.close();
 	}

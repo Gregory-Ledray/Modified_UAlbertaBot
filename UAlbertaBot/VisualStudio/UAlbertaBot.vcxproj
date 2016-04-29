@@ -140,6 +140,7 @@
     <ClCompile Include="..\Source\Micro.cpp" />
     <ClCompile Include="..\Source\ParseUtils.cpp" />
     <ClCompile Include="..\Source\ParticleModel.cpp" />
+    <ClCompile Include="..\Source\ProcessTextFiles.cpp" />
     <ClCompile Include="..\source\ProductionManager.cpp" />
     <ClCompile Include="..\source\RangedManager.cpp" />
     <ClCompile Include="..\source\ScoutManager.cpp" />
@@ -184,6 +185,7 @@
     <ClInclude Include="..\Source\Micro.h" />
     <ClInclude Include="..\Source\ParseUtils.h" />
     <ClInclude Include="..\Source\ParticleModel.h" />
+    <ClInclude Include="..\Source\ProcessTextFiles.h" />
     <ClInclude Include="..\source\ProductionManager.h" />
     <ClInclude Include="..\source\RangedManager.h" />
     <ClInclude Include="..\source\ScoutManager.h" />
