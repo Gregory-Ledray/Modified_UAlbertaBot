@@ -196,46 +196,82 @@ void AnalysisData::writeScoutData()
 
 	for (auto & unit : BWAPI::Broodwar->enemy()->getUnits())
 	{
-		BWAPI::UnitType _unittype = unit->getType();
+		//create a new particle model for this observed unit
+		ParticleModel model = ParticleModel::ParticleModel(unit);
+
+		//clear out the old new particle list
+		new_particle_model_list.clear();
+
+		//check if observable units could have been a particle of the past
+		//if so, need to delete it from the old particle list
+		//this is all handled in previousParticleCheck
+		bool duplicate = model.previousParticleCheck();//true for a duplicate
+
+		//it's definitely being observed so it must be added to the particle list
+		new_particle_model_list.push_back(model);
+
+		/*BWAPI::UnitType _unittype = unit->getType();
 		if (_unittype.isWorker())
 		{
-			enemy_worker_count++;
-			enemy_supply_used += _unittype.supplyRequired();
+		enemy_worker_count++;
+		enemy_supply_used += _unittype.supplyRequired();
 		}
 		else if (_unittype.isBuilding() || _unittype.isAddon())
 		{
-			enemy_building_minerals_spent += _unittype.mineralPrice();
-			enemy_supply_total += _unittype.supplyProvided();
-			enemy_upgrade_gas_spent += _unittype.armorUpgrade().gasPrice() + _unittype.airWeapon().upgradeType().gasPrice() + _unittype.groundWeapon().upgradeType().gasPrice();
-			enemy_upgrade_minerals_spent += _unittype.armorUpgrade().mineralPrice() + _unittype.airWeapon().upgradeType().mineralPrice() + _unittype.groundWeapon().upgradeType().mineralPrice();
-			if (_unittype == BWAPI::UnitTypes::Terran_Command_Center)//account for free Command Center
-				enemy_building_minerals_spent -= 400;
+		enemy_building_minerals_spent += _unittype.mineralPrice();
+		enemy_supply_total += _unittype.supplyProvided();
+		enemy_upgrade_gas_spent += _unittype.armorUpgrade().gasPrice() + _unittype.airWeapon().upgradeType().gasPrice() + _unittype.groundWeapon().upgradeType().gasPrice();
+		enemy_upgrade_minerals_spent += _unittype.armorUpgrade().mineralPrice() + _unittype.airWeapon().upgradeType().mineralPrice() + _unittype.groundWeapon().upgradeType().mineralPrice();
+		if (_unittype == BWAPI::UnitTypes::Terran_Command_Center)//account for free Command Center
+		enemy_building_minerals_spent -= 400;
 		}
 		else if (!_unittype.isFlagBeacon())
 		{
-			//must be military units
-			enemy_military_minerals_spent += _unittype.mineralPrice();
-			enemy_military_gas_spent += _unittype.gasPrice();
-			enemy_supply_used += _unittype.supplyRequired();
-			enemy_upgrade_gas_spent += _unittype.armorUpgrade().gasPrice() + _unittype.airWeapon().upgradeType().gasPrice() + _unittype.groundWeapon().upgradeType().gasPrice();
-			enemy_upgrade_minerals_spent += _unittype.armorUpgrade().mineralPrice() + _unittype.airWeapon().upgradeType().mineralPrice() + _unittype.groundWeapon().upgradeType().mineralPrice();
+		//must be military units
+		enemy_military_minerals_spent += _unittype.mineralPrice();
+		enemy_military_gas_spent += _unittype.gasPrice();
+		enemy_supply_used += _unittype.supplyRequired();
+		enemy_upgrade_gas_spent += _unittype.armorUpgrade().gasPrice() + _unittype.airWeapon().upgradeType().gasPrice() + _unittype.groundWeapon().upgradeType().gasPrice();
+		enemy_upgrade_minerals_spent += _unittype.armorUpgrade().mineralPrice() + _unittype.airWeapon().upgradeType().mineralPrice() + _unittype.groundWeapon().upgradeType().mineralPrice();
 
-		}
-		//create a new particle model
-		ParticleModel model = ParticleModel::ParticleModel(unit);
-		//check if observable units could have been a particle of the past
-		if (model.previousParticleCheck())
+		}*/
+	}
+
+	//if there are any particles not observed, they still need to be updated
+	//and culled by this function
+	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
+	{
+		i->particleUpdate();
+	}
+	previous_particle_model_list = new_particle_model_list;
+
+	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
+	{
+		ParticleModel j = *i;
+		if (j._type.isWorker())
 		{
-			
-			//Observable adds it to the 'new' vector
+			enemy_worker_count++;
+			enemy_supply_used += j._type.supplyRequired();
 		}
-		//it's definitely being observed, so if it's not of the past, create a new particle
-		else
+		else if (j._type.isBuilding() || j._type.isAddon())
 		{
-			model.particleUpdate();
+			enemy_building_minerals_spent += j._type.mineralPrice();
+			enemy_supply_total += j._type.supplyProvided();
+			enemy_upgrade_gas_spent += j._type.armorUpgrade().gasPrice() + j._type.airWeapon().upgradeType().gasPrice() + j._type.groundWeapon().upgradeType().gasPrice();
+			enemy_upgrade_minerals_spent += j._type.armorUpgrade().mineralPrice() + j._type.airWeapon().upgradeType().mineralPrice() + j._type.groundWeapon().upgradeType().mineralPrice();
+			if (j._type == BWAPI::UnitTypes::Terran_Command_Center)//account for free Command Center
+				enemy_building_minerals_spent -= 400;
+		}
+		else if (!j._type.isFlagBeacon())
+		{
+			//must be military units
+			enemy_military_minerals_spent += j._type.mineralPrice();
+			enemy_military_gas_spent += j._type.gasPrice();
+			enemy_supply_used += j._type.supplyRequired();
+			enemy_upgrade_gas_spent += j._type.armorUpgrade().gasPrice() + j._type.airWeapon().upgradeType().gasPrice() + j._type.groundWeapon().upgradeType().gasPrice();
+			enemy_upgrade_minerals_spent += j._type.armorUpgrade().mineralPrice() + j._type.airWeapon().upgradeType().mineralPrice() + j._type.groundWeapon().upgradeType().mineralPrice();
 		}
 	}
-	ParticleModel::previous_enemy_list = ParticleModel::new_enemy_list;
 
 	//for all of these: need a flag to make sure they're only activated if no
 	//enemy units have been killed/destroyed in the last 10 frames of the game.
@@ -244,22 +280,21 @@ void AnalysisData::writeScoutData()
 	{
 		enemy_worker_count = previous_enemy_worker_count;
 	}
+	/*
 	if (previous_enemy_building_minerals_spent > enemy_building_minerals_spent)
 	{
-		enemy_building_minerals_spent = previous_enemy_building_minerals_spent;
+	enemy_building_minerals_spent = previous_enemy_building_minerals_spent;
 	}
 	if (previous_enemy_supply_used > enemy_supply_used)
 	{
-		enemy_supply_used = previous_enemy_supply_used;
+	enemy_supply_used = previous_enemy_supply_used;
 	}
+	*/
+	
 	if (previous_enemy_military_gas_spent > enemy_military_gas_spent)
 		enemy_military_gas_spent = previous_enemy_military_gas_spent;
 	if (previous_enemy_military_minerals_spent > enemy_military_minerals_spent)
 		enemy_military_minerals_spent = previous_enemy_military_minerals_spent;
-	if (previous_enemy_supply_total > enemy_supply_total)
-	{
-		enemy_supply_total = previous_enemy_supply_total;
-	}
 
 	bool dont_output = false;
 
@@ -331,3 +366,6 @@ int AnalysisData::previous_enemy_building_minerals_spent = 0;//
 int AnalysisData::previous_enemy_minerals_on_hand = 0;
 int AnalysisData::previous_enemy_gas_on_hand = 0;
 int AnalysisData::previous_enemy_supply_total = 0;//
+
+std::vector<ParticleModel> AnalysisData::previous_particle_model_list;
+std::vector<ParticleModel> AnalysisData::new_particle_model_list;

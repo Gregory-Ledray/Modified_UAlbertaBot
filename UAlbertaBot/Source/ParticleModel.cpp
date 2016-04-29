@@ -1,5 +1,6 @@
 #include "Common.h"
 #include "ParticleModel.h"
+#include "AnalysisData.h"
 
 using namespace UAlbertaBot;
 
@@ -11,11 +12,21 @@ ParticleModel::ParticleModel(BWAPI::Unit unit)
 	BWAPI::Point<int, 1> Position(0, 0);
 	BWAPI::UnitType _type = _unit -> getType();
 	double trajectory[2] = { 0.0, 0.0 };
-	movementspeed = _type.topSpeed();
+	if (!(_type.isBuilding() || _type.isAddon()))
+	{
+		movementspeed = _type.topSpeed();
+	}
+	else
+	{
+		movementspeed = 0;//building have some movementspeed cause terran :/
+		//the plus side of this is these building particles never decay!
+	}
+	
 	weightdecay = .005*movementspeed;//SCVs speed 5 so last 1/.025=40 frames
+	
 
-	xpos = _unit->getPosition.x;
-	ypos = _unit->getPosition.y;
+	xpos = _unit->getPosition().x;
+	ypos = _unit->getPosition().y;
 
 	//update trajectory - 
 	trajectory[0] = _unit->getVelocityX();
@@ -43,6 +54,7 @@ void ParticleModel::particleUpdate()//this updates a single particle of type Par
 	if (weight >= 0)
 	{
 		new_enemy_list.push_back(_unit);
+		AnalysisData::new_particle_model_list.push_back(*this);
 	}
 }
 
@@ -54,26 +66,26 @@ bool ParticleModel::previousParticleCheck()
 	{
 		BWAPI::Unit j = *i;
 		//if the unit is where a particle is predicted to be
-		if (_unit->exists && _unit->getPlayer == _enemy &&
-			j->getPosition().x + trajectory[0]/weight*.95 < _unit->getPosition().x < j->getPosition().x + trajectory[0]/weight*1.05
-			&& j->getPosition().y - trajectory[1]/weight*.95 < _unit->getPosition().y < j->getPosition().y + trajectory[1]/weight*1.05)
+		if (_unit->exists() && _unit->getPlayer() == _enemy &&
+			(j->getPosition().x + (trajectory[0]/weight*.9)) < (_unit->getPosition().x) < (j->getPosition().x + (trajectory[0]/weight*1.1))
+			&& (j->getPosition().y - (trajectory[1]/weight*.9)) < (_unit->getPosition().y) < (j->getPosition().y + (trajectory[1]/weight*1.1)))
 		{
 			new_enemy_list.push_back(j);//add this to the list of known units!
 			previous_enemy_list.erase(i);//remove the unit from the previous enemy list for reasons
+			for (std::vector<ParticleModel>::iterator k = AnalysisData::previous_particle_model_list.begin(); k != AnalysisData::previous_particle_model_list.end(); k++)
+			{
+				ParticleModel l = *k;
+				if (l.xpos==xpos && l.ypos==ypos) {//in this case the particle being examined is this particle
+					AnalysisData::previous_particle_model_list.erase(k);
+					break;
+				}
+			}
+			
 			return true;
 		}
 
 
 	}
-	return false;
-}
-
-//Return if it was predicted to have re-entered observability
-bool ParticleModel::shouldHaveReEntered()
-{
-	//pull particle's position
-
-	//if 
 	return false;
 }
 

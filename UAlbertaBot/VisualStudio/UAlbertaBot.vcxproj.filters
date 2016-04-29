@@ -159,7 +159,7 @@
     <ClCompile Include="..\Source\Terran_State_Estimator.cpp">
       <Filter>game\macro</Filter>
     </ClCompile>
-    <ClCompile Include="ParticleModel.cpp">
+    <ClCompile Include="..\Source\ParticleModel.cpp">
       <Filter>game\macro</Filter>
     </ClCompile>
   </ItemGroup>
@@ -290,7 +290,7 @@
     <ClInclude Include="..\Source\Terran_State_Estimator.h">
       <Filter>game\macro</Filter>
     </ClInclude>
-    <ClInclude Include="ParticleModel.h">
+    <ClInclude Include="..\Source\ParticleModel.h">
       <Filter>game\macro</Filter>
     </ClInclude>
   </ItemGroup>

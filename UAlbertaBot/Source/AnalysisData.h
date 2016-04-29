@@ -2,6 +2,7 @@
 
 #include "Common.h"
 #include "UnitUtil.h"
+#include "ParticleModel.h"
 
 namespace UAlbertaBot
 {
@@ -43,6 +44,9 @@ namespace UAlbertaBot
     
 	public:
 		static AnalysisData & Instance();
+
+		static std::vector<ParticleModel> previous_particle_model_list;
+		static std::vector<ParticleModel> new_particle_model_list;
 
 		//AnalysisData();
 		void Update();

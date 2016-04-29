@@ -11,7 +11,7 @@ namespace UAlbertaBot
 		double weight;
 		double movementspeed;//measured in pixels per frame;
 		//movement speed also represents the unit's class
-		BWAPI::UnitType _type;
+		
 		double weightdecay;
 		BWAPI::Unit _unit;
 		BWAPI::Player _enemy;
@@ -21,14 +21,14 @@ namespace UAlbertaBot
 		BWAPI::Point<int, 1> position;
 
 	public:
+		BWAPI::UnitType _type;
+
 		ParticleModel(BWAPI::Unit _unit);
 
 		static std::vector<BWAPI::Unit> previous_enemy_list;
-		static std::vector<BWAPI::Unit> new_enemy_list; '
-		
-		void Output();
+		static std::vector<BWAPI::Unit> new_enemy_list;
+
 		bool previousParticleCheck();
-		bool shouldHaveReEntered();
 		void particleUpdate();
 	};
 
