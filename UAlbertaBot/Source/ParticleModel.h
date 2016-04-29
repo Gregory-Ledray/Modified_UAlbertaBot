@@ -23,6 +23,9 @@ namespace UAlbertaBot
 	public:
 		BWAPI::UnitType _type;
 
+		bool collecting_gas;
+		bool collecting_minerals;
+
 		ParticleModel(BWAPI::Unit _unit);
 
 		static std::vector<BWAPI::Unit> previous_enemy_list;

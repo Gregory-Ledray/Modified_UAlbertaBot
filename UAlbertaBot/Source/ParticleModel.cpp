@@ -24,9 +24,24 @@ ParticleModel::ParticleModel(BWAPI::Unit unit)
 	
 	weightdecay = .005*movementspeed;//SCVs speed 5 so last 1/.025=40 frames
 	
+	if (_unit->isCarryingGas())
+	{
+		collecting_gas = true;
+		collecting_minerals = false;
+	}
+	else if (_unit->isCarryingMinerals())
+	{
+		collecting_minerals = true;
+		collecting_gas = false;
+	}
+	else
+	{
+		collecting_gas = false;
+		collecting_minerals = true;
+	}
 
-	xpos = _unit->getPosition().x;
-	ypos = _unit->getPosition().y;
+	int xpos = _unit->getPosition().x;
+	int ypos = _unit->getPosition().y;
 
 	//update trajectory - 
 	trajectory[0] = _unit->getVelocityX();
@@ -55,6 +70,18 @@ void ParticleModel::particleUpdate()//this updates a single particle of type Par
 	{
 		new_enemy_list.push_back(_unit);
 		AnalysisData::new_particle_model_list.push_back(*this);
+	}
+
+	//update gas/mineral status
+	if (_unit->isCarryingGas())
+	{
+		collecting_gas = true;
+		collecting_minerals = false;
+	}
+	else if (_unit->isCarryingMinerals())
+	{
+		collecting_minerals = true;
+		collecting_gas = false;
 	}
 }
 

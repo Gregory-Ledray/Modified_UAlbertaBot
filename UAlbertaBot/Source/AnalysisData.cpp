@@ -70,6 +70,7 @@ void AnalysisData::gameOver(bool win)
 	if (data_file.is_open())
 	{
 		data_file << "Game Over\n" << w << "\n\n";
+		data_file.close();
 	}
 	else UAB_ASSERT(true, "Couldn't open the main file at game termination\n");
 
@@ -80,8 +81,101 @@ void AnalysisData::gameOver(bool win)
 	if (data_file_2.is_open())
 	{
 		data_file_2 << "Game Over\n" << w << "\n\n";
+		data_file_2.close();
 	}
 	else UAB_ASSERT(true, "Couldn't open the scouting file at game termination\n");
+
+	post_game_analysis();
+}
+
+void AnalysisData::post_game_analysis()
+{
+	std::vector<std::pair<int, int>> worker_count_aa;
+	std::vector<std::pair<int, int>> enemy_workers_on_minerals_aa;
+	std::vector<std::pair<int, int>> enemy_workers_on_gas_aa;
+	std::vector<std::pair<int, int>> military_minerals_spent_aa;
+	std::vector<std::pair<int, int>> military_gas_spent_aa;
+	std::vector<std::pair<int, int>> enemy_military_supply_used_aa;
+	std::vector<std::pair<int, int>> enemy_upgrade_minerals_spent_aa;
+	std::vector<std::pair<int, int>> enemy_upgrade_gas_spent_aa;
+	std::vector<std::pair<int, int>> enemy_building_minerals_spent_aa;
+	std::vector<std::pair<int, int>> enemy_minerals_on_hand_aa;
+	std::vector<std::pair<int, int>> enemy_gas_on_hand_aa;
+	std::vector<std::pair<int, int>> enemy_supply_total_aa;
+
+	int frame;
+
+	const char *path = "C:/Users/Gregory/Desktop/ualbertabot_2/scouting_data_out.txt";
+	std::ifstream scouting_data;
+	scouting_data.open(path, std::ifstream::in);
+	if (scouting_data.is_open())
+	{
+		scouting_data.seekg(0, scouting_data.beg);//start at the beginning
+		char input[42];
+		char out[10];
+		while (scouting_data.getline(input, 42) && input[0] != 'G')//while the game isn't over
+		{
+			scouting_data.getline(input, 42);
+			int x = 0;
+			for (int i = 14; i < 16 ; i++)
+			{
+				if (!std::isspace(input[i]))
+				{
+					out[x] = input[i];
+					x++;
+				}
+			}
+			int temp = atoi(out);
+
+			x = 0;
+			for (int i = 22; i < 35; i++)
+			{
+				if (!std::isspace(input[i]) && input[i] != NULL)
+				{
+					out[x] = input[i];
+					x++;
+				}
+			}
+			frame = atoi(out);
+			worker_count_aa.push_back(std::make_pair(temp, frame));
+		}
+		
+		
+		
+	}
+	scouting_data.close();
+	/*
+	data_file << "worker count: " + std::to_string(enemy_worker_count) + " frame: " + std::to_string(frame) + " \n";
+
+	int dead_worker_count = player->deadUnitCount(BWAPI::UnitTypes::Terran_SCV);
+	int enemy_workers_minerals_spent = 50 * (enemy_worker_count - 4 + dead_worker_count);
+	data_file << "workers minerals spent: " + std::to_string(enemy_workers_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "workers on minerals: " + std::to_string(enemy_workers_on_minerals) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "workers on gas: " + std::to_string(enemy_workers_on_gas) + " frame: " + std::to_string(frame) + " \n";
+
+	//military_minerals_spent = player->spentMinerals() + player->refundedMinerals() - upgrade_minerals_spent - building_minerals_spent;
+	data_file << "military minerals spent: " + std::to_string(enemy_military_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
+
+	//military_gas_spent = player->spentGas() + player->refundedGas() - workers_minerals_spent - upgrade_minerals_spent - building_gas_spent; //should be less than spentGas
+	data_file << "military gas spent: " + std::to_string(enemy_military_gas_spent) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "military unit supply used: " + std::to_string(enemy_supply_used - enemy_worker_count) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "upgrade minerals spent: " + std::to_string(enemy_upgrade_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "upgrade gas spent: " + std::to_string(enemy_upgrade_gas_spent) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "building minerals spent: " + std::to_string(enemy_building_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "minerals on hand: " + std::to_string(enemy_minerals_on_hand) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "gas on hand: " + std::to_string(enemy_gas_on_hand) + " frame: " + std::to_string(frame) + " \n";
+
+	data_file << "supply: " + std::to_string(enemy_supply_total / 2) + " frame: " + std::to_string(frame) + " \n\n\n";
+
+	*/
 }
 
 //aupdating the list of military units
@@ -182,6 +276,8 @@ void AnalysisData::writeScoutData()
 	int frame = BWAPI::Broodwar->getFrameCount();
 
 	int enemy_worker_count = 0;//
+	int enemy_workers_on_gas(0);//purely local variable
+	int enemy_workers_on_minerals(0);//purely local variable
 	int enemy_gas_count = 0;
 	int enemy_mineral_count = 0;
 	int enemy_military_minerals_spent = 0;//
@@ -237,6 +333,7 @@ void AnalysisData::writeScoutData()
 		}*/
 	}
 
+
 	//if there are any particles not observed, they still need to be updated
 	//and culled by this function
 	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
@@ -252,6 +349,11 @@ void AnalysisData::writeScoutData()
 		{
 			enemy_worker_count++;
 			enemy_supply_used += j._type.supplyRequired();
+
+			if (j.collecting_gas)
+				enemy_workers_on_gas++;
+			else if (j.collecting_minerals)
+				enemy_workers_on_minerals++;
 		}
 		else if (j._type.isBuilding() || j._type.isAddon())
 		{
@@ -315,9 +417,9 @@ void AnalysisData::writeScoutData()
 		int enemy_workers_minerals_spent = 50 * (enemy_worker_count - 4 + dead_worker_count);
 		data_file << "workers minerals spent: " + std::to_string(enemy_workers_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
 
-		data_file << "workers on minerals: " + std::to_string(enemy_mineral_count) + " frame: " + std::to_string(frame) + " \n";
+		data_file << "workers on minerals: " + std::to_string(enemy_workers_on_minerals) + " frame: " + std::to_string(frame) + " \n";
 
-		data_file << "workers on gas: " + std::to_string(enemy_gas_count) + " frame: " + std::to_string(frame) + " \n";
+		data_file << "workers on gas: " + std::to_string(enemy_workers_on_gas) + " frame: " + std::to_string(frame) + " \n";
 
 		//military_minerals_spent = player->spentMinerals() + player->refundedMinerals() - upgrade_minerals_spent - building_minerals_spent;
 		data_file << "military minerals spent: " + std::to_string(enemy_military_minerals_spent) + " frame: " + std::to_string(frame) + " \n";
@@ -342,8 +444,8 @@ void AnalysisData::writeScoutData()
 		data_file.close();
 	}
 	previous_enemy_worker_count = enemy_worker_count;//
-	previous_enemy_gas_count = enemy_gas_count;
-	previous_enemy_mineral_count = enemy_mineral_count;
+	previous_enemy_workers_on_gas = enemy_workers_on_gas;
+	previous_enemy_workers_on_minerals = enemy_workers_on_minerals;
 	previous_enemy_military_minerals_spent = enemy_military_minerals_spent;//
 	previous_enemy_military_gas_spent = enemy_military_gas_spent;//
 	previous_enemy_supply_used = enemy_supply_used;//
@@ -355,8 +457,8 @@ void AnalysisData::writeScoutData()
 	previous_enemy_supply_total = enemy_supply_total;//
 }
 int AnalysisData::previous_enemy_worker_count = 0;//
-int AnalysisData::previous_enemy_gas_count = 0;
-int AnalysisData::previous_enemy_mineral_count = 0;
+int AnalysisData::previous_enemy_workers_on_gas = 0;
+int AnalysisData::previous_enemy_workers_on_minerals = 0;
 int AnalysisData::previous_enemy_military_minerals_spent = 0;//
 int AnalysisData::previous_enemy_military_gas_spent = 0;//
 int AnalysisData::previous_enemy_supply_used = 0;//

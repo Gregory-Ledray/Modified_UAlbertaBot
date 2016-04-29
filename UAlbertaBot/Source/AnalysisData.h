@@ -28,8 +28,8 @@ namespace UAlbertaBot
 			static BWAPI::Unitset Military_Unit_List;
 
 			static int previous_enemy_worker_count;//
-			static int previous_enemy_gas_count;
-			static int previous_enemy_mineral_count;
+			static int previous_enemy_workers_on_gas;
+			static int previous_enemy_workers_on_minerals;
 			static int previous_enemy_military_minerals_spent;//
 			static int previous_enemy_military_gas_spent;//
 			static int previous_enemy_supply_used;//
@@ -60,6 +60,7 @@ namespace UAlbertaBot
 
 		void writeScoutData();
 		void updateScoutData();
+		void post_game_analysis();
 	};
 
 }
