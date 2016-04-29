@@ -7,6 +7,7 @@
 #include "UnitData.h"
 #include "WorkerManager.h"
 #include <ctime>
+#include "ParticleModel.h"
 
 
 using namespace UAlbertaBot;
@@ -220,7 +221,21 @@ void AnalysisData::writeScoutData()
 			enemy_upgrade_minerals_spent += _unittype.armorUpgrade().mineralPrice() + _unittype.airWeapon().upgradeType().mineralPrice() + _unittype.groundWeapon().upgradeType().mineralPrice();
 
 		}
+		//create a new particle model
+		ParticleModel model = ParticleModel::ParticleModel(unit);
+		//check if observable units could have been a particle of the past
+		if (model.previousParticleCheck())
+		{
+			
+			//Observable adds it to the 'new' vector
+		}
+		//it's definitely being observed, so if it's not of the past, create a new particle
+		else
+		{
+			model.particleUpdate();
+		}
 	}
+	ParticleModel::previous_enemy_list = ParticleModel::new_enemy_list;
 
 	//for all of these: need a flag to make sure they're only activated if no
 	//enemy units have been killed/destroyed in the last 10 frames of the game.
