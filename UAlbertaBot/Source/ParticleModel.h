@@ -11,6 +11,7 @@ namespace UAlbertaBot
 		double weight;
 		double movementspeed;//measured in pixels per frame;
 		//movement speed also represents the unit's class
+		int movementtime;
 		
 		double weightdecay;
 		BWAPI::Unit _unit;

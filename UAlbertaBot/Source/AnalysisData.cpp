@@ -210,65 +210,106 @@ void AnalysisData::writeScoutData()
 	//clear out the old new particle list
 	new_particle_model_list.clear();
 
-	for (auto & unit : BWAPI::Broodwar->enemy()->getUnits())
+	int a = 0;
+	for (BWAPI::UnitInterface* unit : BWAPI::Broodwar->enemy()->getUnits())
 	{
-		//create a new particle model for this observed unit
-		ParticleModel model = ParticleModel::ParticleModel(unit);
+		if (unit->isVisible())
+		{
+			//create a new particle model for this observed unit
+			ParticleModel model = ParticleModel::ParticleModel(unit);
 
-		//check if observable units could have been a particle of the past
-		//if so, need to delete it from the old particle list
-		//this is all handled in previousParticleCheck
-		bool duplicate = model.previousParticleCheck();//true for a duplicate
+			data_file << "g0\n";
 
-		//it's definitely being observed so it must be added to the particle list
-		new_particle_model_list.push_back(model);
+			//check if observable units could have been a particle of the past
+			//if so, need to delete it from the old particle list
+			//this is all handled in previousParticleCheck
+			bool duplicate = model.previousParticleCheck();//true for a duplicate
+
+			data_file << "g1\n";
+
+			//it's definitely being observed so it must be added to the particle list
+			new_particle_model_list.push_back(model);
+
+			a++;
+		}
 	}
+	//data_file << "oberved particle count: " << a;
+	a = 0;
 
+	data_file << "g2\n";
 
 	//if there are any particles not observed, they still need to be updated
 	//and culled by this function
 	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
 	{
 		i->particleUpdate();
+		a++;
 	}
+	data_file << "g3\n";
+	//data_file << " non-observed particle count: " << a;
+	a = 0;
+
+	previous_particle_model_list.clear();
 	previous_particle_model_list = new_particle_model_list;
 
 	int c(0);
+	int b(0);
+
+	data_file << "g4\n";
 
 	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
 	{
-		ParticleModel j = *i;
-		if (j._type.isWorker())
+		data_file << "g5\n";
+		//data_file << " type: " << i->_type.acceleration();
+		BWAPI::UnitType zulu = i->_type;
+		data_file << i->collecting_minerals<<"\n";
+		bool zeta = zulu.isWorker();
+		data_file << zeta;
+		if (zeta)
 		{
 			enemy_worker_count++;
-			enemy_supply_used += j._type.supplyRequired();
+			enemy_supply_used += i->_type.supplyRequired();
 
-			if (j.collecting_gas)
+			if (i->collecting_gas)
+			{
 				enemy_workers_on_gas++;
-			else if (j.collecting_minerals)
+			}
+			else if (i->collecting_minerals)
+			{
 				enemy_workers_on_minerals++;
+			}				
+
+			a++;
 		}
-		else if (j._type.isBuilding() || j._type.isAddon())
+		else if (i->_type.isBuilding() || i->_type.isAddon())
 		{
-			enemy_building_minerals_spent += j._type.mineralPrice();
-			enemy_supply_total += j._type.supplyProvided();
-			enemy_upgrade_gas_spent += j._type.armorUpgrade().gasPrice() + j._type.airWeapon().upgradeType().gasPrice() + j._type.groundWeapon().upgradeType().gasPrice();
-			enemy_upgrade_minerals_spent += j._type.armorUpgrade().mineralPrice() + j._type.airWeapon().upgradeType().mineralPrice() + j._type.groundWeapon().upgradeType().mineralPrice();
-			if (j._type == BWAPI::UnitTypes::Terran_Command_Center)//account for free Command Center
+			enemy_building_minerals_spent += i->_type.mineralPrice();
+			enemy_supply_total += i->_type.supplyProvided();
+			enemy_upgrade_gas_spent += i->_type.armorUpgrade().gasPrice() + i->_type.airWeapon().upgradeType().gasPrice() + i->_type.groundWeapon().upgradeType().gasPrice();
+			enemy_upgrade_minerals_spent += i->_type.armorUpgrade().mineralPrice() + i->_type.airWeapon().upgradeType().mineralPrice() + i->_type.groundWeapon().upgradeType().mineralPrice();
+			if (i->_type == BWAPI::UnitTypes::Terran_Command_Center)//account for free Command Center
 				enemy_building_minerals_spent -= 400;
+
+			b++;
 		}
-		else if (!j._type.isFlagBeacon())
+		else if (!i->_type.isFlagBeacon())
 		{
 			//must be military units
-			enemy_military_minerals_spent += j._type.mineralPrice();
-			enemy_military_gas_spent += j._type.gasPrice();
-			enemy_supply_used += j._type.supplyRequired();
-			enemy_upgrade_gas_spent += j._type.armorUpgrade().gasPrice() + j._type.airWeapon().upgradeType().gasPrice() + j._type.groundWeapon().upgradeType().gasPrice();
-			enemy_upgrade_minerals_spent += j._type.armorUpgrade().mineralPrice() + j._type.airWeapon().upgradeType().mineralPrice() + j._type.groundWeapon().upgradeType().mineralPrice();
+			enemy_military_minerals_spent += i->_type.mineralPrice();
+			enemy_military_gas_spent += i->_type.gasPrice();
+			enemy_supply_used += i->_type.supplyRequired();
+			enemy_upgrade_gas_spent += i->_type.armorUpgrade().gasPrice() + i->_type.airWeapon().upgradeType().gasPrice() + i->_type.groundWeapon().upgradeType().gasPrice();
+			enemy_upgrade_minerals_spent += i->_type.armorUpgrade().mineralPrice() + i->_type.airWeapon().upgradeType().mineralPrice() + i->_type.groundWeapon().upgradeType().mineralPrice();
 		}
+		else if (i->_type == NULL){
+			data_file << "type is null";
+		}
+
 		c++;
 	}
-	data_file << "count of particles: " << c;
+	data_file << " worker count: " << a;
+	//data_file << " building count: " << b;
+	data_file << " count of general particles: " << c << "\n";
 
 	//for all of these: need a flag to make sure they're only activated if no
 	//enemy units have been killed/destroyed in the last 10 frames of the game.
