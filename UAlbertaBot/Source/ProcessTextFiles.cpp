@@ -10,6 +10,8 @@ ProcessTextFiles & ProcessTextFiles::Instance()
 
 void ProcessTextFiles::post_game_analysis(char *path)
 {
+	estimated_game_number = 0;
+
 	//const char *path = path;
 	scouting_data.open(path, std::ifstream::in);
 	if (scouting_data.is_open())
@@ -17,7 +19,7 @@ void ProcessTextFiles::post_game_analysis(char *path)
 		scouting_data.seekg(0, scouting_data.beg);//start at the beginning
 		char input[20];
 		char out[10];
-		while (scouting_data.getline(input, 20))//while the game isn't over
+		while (scouting_data.getline(input, 20))//while the thing isn't over
 		{
 			//worker count
 			int x = 0;
@@ -32,8 +34,7 @@ void ProcessTextFiles::post_game_analysis(char *path)
 					break;
 			}
 			int temp = atoi(out);
-
-			int y = 0;
+							int y = 0;
 			for (int i = x; i < 20; i++)
 			{
 				if (!std::isspace(input[i]) && input[i] != '\n')
@@ -45,20 +46,18 @@ void ProcessTextFiles::post_game_analysis(char *path)
 					break;
 			}
 			frame = atoi(out);
-			//worker_count_aa.push_back(std::make_pair(temp, frame));
 
-			//this finds what game we're on and stores the value in estimated_game_number
-			for (int i = 3000; i < 5000; i+=10)
-			{
-				int estimated_game_number = 0;
-				for (x = estimated_game_number; x < 30; x++)
-				{
-					if (worker_count_2d[i][x] != NULL && x>estimated_game_number)
-						estimated_game_number = x;
-				}
-			}
+			//check if it's a new game!
+			if (last_frame > frame)
+				estimated_game_number++;
+			last_frame = frame;
+
+			//if over the frame limit, stop taking in data
+			if (frame / 10 > 3999 || frame / 10 < 0)
+				return;
+
 			worker_count_2d[frame / 10][estimated_game_number] = temp;
-			
+							
 			//workers minerals spent
 			ProcessTextFiles::workerMineralsSpent();
 			ProcessTextFiles::workersOnMinerals();
@@ -540,3 +539,5 @@ void ProcessTextFiles::supplyTotal()
 	//enemy_supply_total_aa.push_back(std::make_pair(temp, frame));
 	enemy_supply_total_2d[frame / 10][estimated_game_number] = temp;
 }
+
+int ProcessTextFiles::last_frame = 0;

@@ -71,7 +71,7 @@ void AnalysisData::gameOver(bool win)
 
 	if (data_file.is_open())
 	{
-		data_file << "\n\n";
+		data_file << "\n";
 		data_file.close();
 	}
 	else UAB_ASSERT(true, "Couldn't open the main file at game termination\n");
@@ -82,7 +82,7 @@ void AnalysisData::gameOver(bool win)
 
 	if (data_file_2.is_open())
 	{
-		data_file_2 << "\n\n";
+		data_file_2 << "\n";
 		data_file_2.close();
 	}
 	else UAB_ASSERT(true, "Couldn't open the scouting file at game termination\n");
@@ -218,14 +218,10 @@ void AnalysisData::writeScoutData()
 			//create a new particle model for this observed unit
 			ParticleModel model = ParticleModel::ParticleModel(unit);
 
-			data_file << "g0\n";
-
 			//check if observable units could have been a particle of the past
 			//if so, need to delete it from the old particle list
 			//this is all handled in previousParticleCheck
 			bool duplicate = model.previousParticleCheck();//true for a duplicate
-
-			data_file << "g1\n";
 
 			//it's definitely being observed so it must be added to the particle list
 			new_particle_model_list.push_back(model);
@@ -236,8 +232,6 @@ void AnalysisData::writeScoutData()
 	//data_file << "oberved particle count: " << a;
 	a = 0;
 
-	data_file << "g2\n";
-
 	//if there are any particles not observed, they still need to be updated
 	//and culled by this function
 	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
@@ -245,7 +239,6 @@ void AnalysisData::writeScoutData()
 		i->particleUpdate();
 		a++;
 	}
-	data_file << "g3\n";
 	//data_file << " non-observed particle count: " << a;
 	a = 0;
 
@@ -255,17 +248,10 @@ void AnalysisData::writeScoutData()
 	int c(0);
 	int b(0);
 
-	data_file << "g4\n";
-
 	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
 	{
-		data_file << "g5\n";
-		//data_file << " type: " << i->_type.acceleration();
 		BWAPI::UnitType zulu = i->_type;
-		data_file << i->collecting_minerals<<"\n";
-		bool zeta = zulu.isWorker();
-		data_file << zeta;
-		if (zeta)
+		if (i->worker())
 		{
 			enemy_worker_count++;
 			enemy_supply_used += i->_type.supplyRequired();
@@ -281,7 +267,7 @@ void AnalysisData::writeScoutData()
 
 			a++;
 		}
-		else if (i->_type.isBuilding() || i->_type.isAddon())
+		else if (i->building())
 		{
 			enemy_building_minerals_spent += i->_type.mineralPrice();
 			enemy_supply_total += i->_type.supplyProvided();
@@ -292,7 +278,7 @@ void AnalysisData::writeScoutData()
 
 			b++;
 		}
-		else if (!i->_type.isFlagBeacon())
+		else if (!i->milunit())
 		{
 			//must be military units
 			enemy_military_minerals_spent += i->_type.mineralPrice();
@@ -307,9 +293,6 @@ void AnalysisData::writeScoutData()
 
 		c++;
 	}
-	data_file << " worker count: " << a;
-	//data_file << " building count: " << b;
-	data_file << " count of general particles: " << c << "\n";
 
 	//for all of these: need a flag to make sure they're only activated if no
 	//enemy units have been killed/destroyed in the last 10 frames of the game.

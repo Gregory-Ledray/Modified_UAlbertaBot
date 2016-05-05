@@ -34,6 +34,9 @@ namespace UAlbertaBot
 
 		bool previousParticleCheck();
 		void particleUpdate();
+		bool worker();
+		bool building();
+		bool milunit();
 	};
 
 }

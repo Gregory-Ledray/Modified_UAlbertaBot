@@ -10,16 +10,8 @@ ParticleModel::ParticleModel(BWAPI::Unit unit)
 	, _enemy(BWAPI::Broodwar->enemy())
 	, movementtime(1)
 {
-	BWAPI::Point<int, 1> Position(0, 0);
-	BWAPI::UnitType _type = _unit -> getType();
-
-	//debugging
-	const char *path = "C:/Users/Gregory/Desktop/ualbertabot/scouting_data_out.txt";
-	std::ofstream data_file;
-	data_file.open(path, std::ofstream::out | std::ofstream::app);
-	bool a = _type.isWorker();
-	data_file << "is worker?" << a;
-	//end debugging
+	position = BWAPI::Point<int, 1>::Point(0,0);
+	_type = unit -> getType();
 
 	double trajectory[2] = { 0.0, 0.0 };
 	if (!(_type.isBuilding() || _type.isAddon()))
@@ -53,24 +45,17 @@ ParticleModel::ParticleModel(BWAPI::Unit unit)
 	int xpos = _unit->getPosition().x;
 	int ypos = _unit->getPosition().y;
 
-	data_file << "g0.5\n";
-
 	//update trajectory - 
 	trajectory[0] = _unit->getVelocityX();
 	trajectory[1] = _unit->getVelocityY();
-	data_file << "g0.6\n";
 	//normalize vectors to unit vectors
 	double to_divide = trajectory[0] + trajectory[1];
 	double normalized_trajectory[2] = { trajectory[0] / to_divide, trajectory[1] / to_divide };
-	data_file << "g0.7\n";
 	//multiply vectors by class-specific weights
 	double weighted_normalized_trajectory[2] = { normalized_trajectory[0] * movementspeed, normalized_trajectory[1] * movementspeed };
-	data_file << "g0.8\n";
 	//sum resulting vectors - n/a b/c not taking terrain into account for simplicity
 	trajectory[0] = weighted_normalized_trajectory[0];
 	trajectory[1] = weighted_normalized_trajectory[1];
-	data_file << "g0.9\n";
-	data_file.close();
 }
 
 void ParticleModel::particleUpdate()//this updates a single particle of type ParticleModel
@@ -106,36 +91,22 @@ void ParticleModel::particleUpdate()//this updates a single particle of type Par
 //checks if observable units could have been a particle of the past
 bool ParticleModel::previousParticleCheck()
 {
-	//debugging
-	const char *path = "C:/Users/Gregory/Desktop/ualbertabot/scouting_data_out.txt";
-	std::ofstream data_file;
-	data_file.open(path, std::ofstream::out | std::ofstream::app);
-	bool a = _type.isWorker();
-	data_file << "is worker?" << a;
-	//end debugging
-	data_file << "g1.1\n";
 	//iterate through all of the previous enemy list
 	for (std::vector<ParticleModel>::iterator i = AnalysisData::previous_particle_model_list.begin(); i != AnalysisData::previous_particle_model_list.end(); i++)
 	{
-		data_file << "g1.2\n";
 		BWAPI::Unit j = i->_unit;
-		data_file << "g1.3\n";
 		//if the unit is where a particle is predicted to be
 		if (_unit->exists() && _unit->getPlayer() == _enemy &&
 			(int(j->getPosition().x + (trajectory[0] * movementspeed * movementtime * .9)) <= int(_unit->getPosition().x) || int(_unit->getPosition().y) <= int(j->getPosition().x + (trajectory[0] * movementspeed * movementtime * 1.1)))
 			&& (int(j->getPosition().y + (trajectory[1] * movementspeed * movementtime * .9)) <= int(_unit->getPosition().y) || int(_unit->getPosition().y) <= int(j->getPosition().y + (trajectory[1] * movementspeed * movementtime * 1.1))))
 		{
-			data_file << "g1.4\n";
 			AnalysisData::previous_particle_model_list.erase(i);
 			//AnalysisData::new_particle_model_list.push_back(*this); this is handled in AnalysisData.cpp
 			return true;
 		}
-		data_file << "g1.5\n";
 
 	}
 	return false;
-
-	data_file.close();
 
 	/* previous version of this:
 	//iterate through all of the previous enemy list
@@ -165,6 +136,21 @@ bool ParticleModel::previousParticleCheck()
 	}
 	return false;
 	*/
+}
+
+bool ParticleModel::worker()
+{
+	return _type.isWorker();
+}
+
+bool ParticleModel::building()
+{
+	return _type.isBuilding() || _type.isAddon();
+}
+
+bool ParticleModel::milunit()
+{
+	return !_type.isFlagBeacon();
 }
 
 std::vector<BWAPI::Unit> ParticleModel::previous_enemy_list;

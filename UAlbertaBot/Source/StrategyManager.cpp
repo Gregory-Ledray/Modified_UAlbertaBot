@@ -399,12 +399,12 @@ void StrategyManager::onEnd(const bool isWinner)
 
 	if (isWinner)
 	{
-		//AnalysisData::Instance().gameOver(1);
+		AnalysisData::Instance().gameOver(1);
 		_strategies[Config::Strategy::StrategyName]._wins++;
 	}
 	else
 	{
-		//AnalysisData::Instance().gameOver(0);
+		AnalysisData::Instance().gameOver(0);
 		_strategies[Config::Strategy::StrategyName]._losses++;
 	}
 
