@@ -57,7 +57,9 @@ void GameCommander::update()
 	_timerManager.stopTimer(TimerManager::Scout);
 
 	//output data
+	_timerManager.startTimer(TimerManager::Analyze);
 	AnalysisData::Instance().Update();
+	_timerManager.stopTimer(TimerManager::Analyze);
 		
 	_timerManager.stopTimer(TimerManager::All);
 

@@ -16,6 +16,7 @@ TimerManager::TimerManager()
 	_timerNames.push_back("MapGrid");
 	_timerNames.push_back("MapTools");
 	_timerNames.push_back("Search");
+	_timerNames.push_back("Analyze");
 }
 
 void TimerManager::startTimer(const TimerManager::Type t)

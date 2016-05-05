@@ -62,8 +62,8 @@ void ParticleModel::particleUpdate()//this updates a single particle of type Par
 	weight -= weightdecay;
 
 	//update estimated position
-	xpos += trajectory[0];
-	ypos += trajectory[1];
+	xpos += int(round(trajectory[0]));
+	ypos += int(round(trajectory[1]));
 
 	//remove particles with less than 0 weight by not adding them to the 'new' list
 	if (weight >= 0)
@@ -88,6 +88,26 @@ void ParticleModel::particleUpdate()//this updates a single particle of type Par
 //checks if observable units could have been a particle of the past
 bool ParticleModel::previousParticleCheck()
 {
+	//iterate through all of the previous enemy list
+	for (std::vector<ParticleModel>::iterator i = AnalysisData::previous_particle_model_list.begin(); i != AnalysisData::previous_particle_model_list.end(); i++)
+	{
+		ParticleModel q = *i;
+		BWAPI::Unit j = q._unit;
+		//if the unit is where a particle is predicted to be
+		if (_unit->exists() && _unit->getPlayer() == _enemy &&
+			(j->getPosition().x + (trajectory[0]/weight*.9)) < (_unit->getPosition().x) < (j->getPosition().x + (trajectory[0]/weight*1.1))
+			&& (j->getPosition().y + (trajectory[1]/weight*.9)) < (_unit->getPosition().y) < (j->getPosition().y + (trajectory[1]/weight*1.1)))
+		{
+			AnalysisData::previous_particle_model_list.erase(i);
+			AnalysisData::new_particle_model_list.push_back(*this);
+			return true;
+		}
+
+
+	}
+	return false;
+
+	/* previous version of this:
 	//iterate through all of the previous enemy list
 	for (std::vector<BWAPI::Unit>::iterator i = previous_enemy_list.begin(); i != previous_enemy_list.end(); i++)
 	{
@@ -114,6 +134,7 @@ bool ParticleModel::previousParticleCheck()
 
 	}
 	return false;
+	*/
 }
 
 std::vector<BWAPI::Unit> ParticleModel::previous_enemy_list;
