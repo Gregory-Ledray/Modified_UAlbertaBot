@@ -24,7 +24,7 @@ public:
 
 	void stopTimer(const TimerManager::Type t);
 
-	double getTotalElapsed();
+	double getTotalElapsed(const TimerManager::Type t);
 
 	void displayTimers(int x, int y);
 };

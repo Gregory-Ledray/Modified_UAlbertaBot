@@ -45,6 +45,8 @@ namespace UAlbertaBot
 	public:
 		static AnalysisData & Instance();
 
+		void time(double time_in_millis);
+
 		static std::vector<ParticleModel> previous_particle_model_list;
 		static std::vector<ParticleModel> new_particle_model_list;
 

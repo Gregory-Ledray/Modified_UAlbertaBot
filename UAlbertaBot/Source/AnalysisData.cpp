@@ -6,7 +6,6 @@
 #include <string>
 #include "UnitData.h"
 #include "WorkerManager.h"
-#include <ctime>
 #include "ParticleModel.h"
 #include "ProcessTextFiles.h"
 #include <stdio.h>
@@ -107,12 +106,19 @@ void AnalysisData::updateMilitary_Unit_List(BWAPI::Unitset unit)
 	}*/
 }
 
+void AnalysisData::time(double time_in_millis)
+{
+	const char *path = "C:/Users/Gregory/Desktop/ualbertabot/time_out.txt";
+	std::ofstream data_file;
+	data_file.open(path, std::ofstream::out | std::ofstream::app);
+	int frame = BWAPI::Broodwar->getFrameCount();
+	data_file << time_in_millis << " " << frame << "\n";
+	data_file.close();
+}
+
 void AnalysisData::writeData()
 {
 	int test_number = 0;
-
-	time_t t = time(0);   // get time now
-	struct tm * now = localtime(&t);
 
 	const char *path = "C:/Users/Gregory/Desktop/ualbertabot/data_out.txt";
 	std::ofstream data_file;
@@ -234,7 +240,7 @@ void AnalysisData::writeScoutData()
 
 	//if there are any particles not observed, they still need to be updated
 	//and culled by this function
-	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
+	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); ++i)
 	{
 		i->particleUpdate();
 		a++;
@@ -248,7 +254,7 @@ void AnalysisData::writeScoutData()
 	int c(0);
 	int b(0);
 
-	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); i++)
+	for (std::vector<ParticleModel>::iterator i = previous_particle_model_list.begin(); i != previous_particle_model_list.end(); ++i)
 	{
 		BWAPI::UnitType zulu = i->_type;
 		if (i->worker())
@@ -288,7 +294,7 @@ void AnalysisData::writeScoutData()
 			enemy_upgrade_minerals_spent += i->_type.armorUpgrade().mineralPrice() + i->_type.airWeapon().upgradeType().mineralPrice() + i->_type.groundWeapon().upgradeType().mineralPrice();
 		}
 		else if (i->_type == NULL){
-			data_file << "type is null";
+			data_file << "type is null\n";
 		}
 
 		c++;

@@ -31,7 +31,7 @@ void GameCommander::update()
 	_timerManager.stopTimer(TimerManager::MapTools);
 
 	_timerManager.startTimer(TimerManager::Search);
-	BOSSManager::Instance().update(35 - _timerManager.getTotalElapsed());
+	BOSSManager::Instance().update(35 - _timerManager.getTotalElapsed(TimerManager::Search));
 	_timerManager.stopTimer(TimerManager::Search);
 
 	// economy and base managers
@@ -59,6 +59,7 @@ void GameCommander::update()
 	//output data
 	_timerManager.startTimer(TimerManager::Analyze);
 	AnalysisData::Instance().Update();
+	//AnalysisData::Instance().time(_timerManager.getTotalElapsed(TimerManager::Analyze));
 	_timerManager.stopTimer(TimerManager::Analyze);
 		
 	_timerManager.stopTimer(TimerManager::All);

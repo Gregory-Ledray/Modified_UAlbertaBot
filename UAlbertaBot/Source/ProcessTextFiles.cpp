@@ -21,6 +21,13 @@ void ProcessTextFiles::post_game_analysis(char *path)
 		char out[10];
 		while (scouting_data.getline(input, 20))//while the thing isn't over
 		{
+			//if there was a nulltype error
+			if (input[0] == 't')
+			{
+				//go to the next line and proceed as normal
+				scouting_data.getline(input, 20);
+			}
+
 			//worker count
 			int x = 0;
 			for (int i = 0; i < 20; i++)
@@ -59,19 +66,34 @@ void ProcessTextFiles::post_game_analysis(char *path)
 			worker_count_2d[frame / 10][estimated_game_number] = temp;
 							
 			//workers minerals spent
-			ProcessTextFiles::workerMineralsSpent();
-			ProcessTextFiles::workersOnMinerals();
-			ProcessTextFiles::workersOnGas();
-			ProcessTextFiles::militaryMineralsSpent();
-			ProcessTextFiles::militaryGasSpent();
-			ProcessTextFiles::militaryUnitSupplyUsed();
-			ProcessTextFiles::upgradeMineralsSpent();
-			ProcessTextFiles::upgradeGasSpent();
-			ProcessTextFiles::buildingMineralsSpent();
-			ProcessTextFiles::mineralsOnHand();
-			ProcessTextFiles::gasOnHand();
-			ProcessTextFiles::supplyTotal();
-			ProcessTextFiles::supplyUsed();
+			ProcessTextFiles::takeInNextLine();
+			enemy_workers_on_minerals_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_worker_minerals_spent_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_workers_on_minerals_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_workers_on_gas_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			military_minerals_spent_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			military_gas_spent_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_military_supply_used_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_upgrade_minerals_spent_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_upgrade_gas_spent_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_building_minerals_spent_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_minerals_on_hand_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_gas_on_hand_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_supply_total_2d[frame / 10][estimated_game_number] = temp;
+			ProcessTextFiles::takeInNextLine();
+			enemy_supply_used_2d[frame / 10][estimated_game_number] = temp;
 		}
 
 		//all data has now been pulled from the text file and put into those 
@@ -84,460 +106,43 @@ void ProcessTextFiles::post_game_analysis(char *path)
 
 }
 
-void ProcessTextFiles::workerMineralsSpent()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_workers_on_minerals_aa.push_back(std::make_pair(temp, frame));
-
-	enemy_workers_on_minerals_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::workersOnMinerals()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_workers_on_minerals_aa.push_back(std::make_pair(temp, frame));
-	enemy_workers_on_minerals_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::workersOnGas()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_workers_on_gas_aa.push_back(std::make_pair(temp, frame));
-	enemy_workers_on_gas_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::militaryMineralsSpent()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//military_minerals_spent_aa.push_back(std::make_pair(temp, frame));
-	military_minerals_spent_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::militaryGasSpent()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//military_gas_spent_aa.push_back(std::make_pair(temp, frame));
-	military_gas_spent_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::militaryUnitSupplyUsed()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_military_supply_used_aa.push_back(std::make_pair(temp, frame));
-	enemy_military_supply_used_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::upgradeMineralsSpent()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_upgrade_minerals_spent_aa.push_back(std::make_pair(temp, frame));
-	enemy_upgrade_minerals_spent_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::upgradeGasSpent()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_upgrade_gas_spent_aa.push_back(std::make_pair(temp, frame));
-	enemy_upgrade_gas_spent_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::buildingMineralsSpent()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_building_minerals_spent_aa.push_back(std::make_pair(temp, frame));
-	enemy_building_minerals_spent_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::mineralsOnHand()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_minerals_on_hand_aa.push_back(std::make_pair(temp, frame));
-	enemy_minerals_on_hand_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::gasOnHand()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_gas_on_hand_aa.push_back(std::make_pair(temp, frame));
-	enemy_gas_on_hand_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::supplyUsed()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_supply_used_aa.push_back(std::make_pair(temp, frame));
-	enemy_supply_used_2d[frame / 10][estimated_game_number] = temp;
-}
-
-void ProcessTextFiles::supplyTotal()
-{
-	char input[20];
-	char out[10];
-	scouting_data.getline(input, 20);
-	int x = 0;
-	for (int i = 0; i < 20; i++)
-	{
-		if (!std::isspace(input[i]))
-		{
-			out[x] = input[i];
-			x++;
-		}
-		else
-			break;
-	}
-	int temp = atoi(out);
-
-	int y = 0;
-	for (int i = x; i < 20; i++)
-	{
-		if (!std::isspace(input[i]) && input[i] != '\n')
-		{
-			out[y] = input[i];
-			y++;
-		}
-		else
-			break;
-	}
-	frame = atoi(out);
-
-	//enemy_supply_total_aa.push_back(std::make_pair(temp, frame));
-	enemy_supply_total_2d[frame / 10][estimated_game_number] = temp;
-}
-
 int ProcessTextFiles::last_frame = 0;
+
+void ProcessTextFiles::takeInNextLine()
+{
+	char input[20];
+	//if there was a nulltype error
+	if (input[0] == 't')
+	{
+		//go to the next line and proceed as normal
+		scouting_data.getline(input, 20);
+	}
+
+	char out[10];
+	scouting_data.getline(input, 20);
+	int x = 0;
+	for (int i = 0; i < 20; i++)
+	{
+		if (!std::isspace(input[i]))
+		{
+			out[x] = input[i];
+			x++;
+		}
+		else
+			break;
+	}
+	temp = atoi(out);
+
+	int y = 0;
+	for (int i = x; i < 20; i++)
+	{
+		if (!std::isspace(input[i]) && input[i] != '\n')
+		{
+			out[y] = input[i];
+			y++;
+		}
+		else
+			break;
+	}
+	frame = atoi(out);
+}

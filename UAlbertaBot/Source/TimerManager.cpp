@@ -29,9 +29,9 @@ void TimerManager::stopTimer(const TimerManager::Type t)
 	_timers[t].stop();
 }
 
-double TimerManager::getTotalElapsed()
+double TimerManager::getTotalElapsed(const TimerManager::Type t)
 {
-	return _timers[0].getElapsedTimeInMilliSec();
+	return _timers[t].getElapsedTimeInMilliSec();
 }
 
 void TimerManager::displayTimers(int x, int y)
