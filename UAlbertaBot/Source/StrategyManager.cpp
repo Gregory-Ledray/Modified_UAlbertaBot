@@ -103,7 +103,7 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 	}
 	else if (myRace == BWAPI::Races::Terran)
 	{
-		//StrategyManager::update();
+		StrategyManager::update();
 		return getTerranBuildOrderGoal();
 	}
 	else if (myRace == BWAPI::Races::Zerg)
@@ -224,7 +224,7 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal()
 	
 	//end of My code
 
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 3));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + (best_organism[0] %3)));
 		if (numMarines > 5)
 		{
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));

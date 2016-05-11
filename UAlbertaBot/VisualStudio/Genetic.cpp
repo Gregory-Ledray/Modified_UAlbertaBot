@@ -41,7 +41,7 @@ void Genetic::InitializeOrganisms(int terran_heuristic, int enemy_heuristic){
 	// initialize the normal organisms
 	for (organism = 0; organism < NUMBER_ORGANISMS; ++organism){
 		for (gene = 0; gene < NUMBER_GENES; ++gene){
-			currentGeneration[organism][gene] = (rand() % max_unit_quantities[gene]);
+			currentGeneration[organism][gene] = (abs(rand()) % max_unit_quantities[gene]);
 		}
 		for (organism = 0; organism < NUMBER_ORGANISMS; ++organism){
 			currentGeneration[organism][gene + 1] = (enemy_heuristic - terran_heuristic);
@@ -91,7 +91,7 @@ void Genetic::ProduceNextGeneration(){
 			if (mutateThisGene == 0){
 
 				// mutate
-				nextGeneration[organism][gene] = rand() % max_unit_quantities[gene];
+				nextGeneration[organism][gene] = (abs(rand()) % max_unit_quantities[gene]);
 			}
 			else {
 				// or copy this gene from a parent
