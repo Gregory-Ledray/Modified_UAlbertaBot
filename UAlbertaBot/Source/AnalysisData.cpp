@@ -288,7 +288,7 @@ void AnalysisData::writeScoutData()
 
 			b++;
 		}
-		else if (!i->milunit())
+		else if (!(i->milunit()))
 		{
 			//must be military units
 			enemy_military_minerals_spent += i->_type.mineralPrice();
