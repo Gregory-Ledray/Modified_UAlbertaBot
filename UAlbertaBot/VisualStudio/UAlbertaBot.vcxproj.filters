@@ -165,6 +165,7 @@
     <ClCompile Include="..\Source\ProcessTextFiles.cpp">
       <Filter>util</Filter>
     </ClCompile>
+    <ClCompile Include="Genetic.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\Source\CombatCommander.h">
@@ -299,5 +300,6 @@
     <ClInclude Include="..\Source\ProcessTextFiles.h">
       <Filter>util</Filter>
     </ClInclude>
+    <ClInclude Include="Genetic.h" />
   </ItemGroup>
 </Project>

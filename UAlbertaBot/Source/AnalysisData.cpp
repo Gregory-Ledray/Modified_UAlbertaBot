@@ -9,6 +9,7 @@
 #include "ParticleModel.h"
 #include "ProcessTextFiles.h"
 #include <stdio.h>
+#include "StrategyManager.h"
 
 
 using namespace UAlbertaBot;
@@ -167,6 +168,9 @@ void AnalysisData::writeData()
 		data_file <<  std::to_string((player->supplyUsed()) / 2) + " " + std::to_string(frame) + "\n";
 
 		data_file.close();
+
+		StrategyManager::Instance().terran_heuristic = military_minerals_spent + military_gas_spent + upgrade_minerals_spent +
+			upgrade_gas_spent + building_minerals_spent + building_gas_spent + gas_count + mineral_count;
 	}
 	else UAB_ASSERT(true, "Couldn't open the file\n");
 }
@@ -373,6 +377,12 @@ void AnalysisData::writeScoutData()
 
 		data_file.close();
 	}
+
+	StrategyManager::Instance().enemy_heuristic = enemy_worker_count + enemy_gas_count + enemy_mineral_count + enemy_military_minerals_spent +
+		enemy_military_gas_spent + enemy_supply_used + enemy_upgrade_minerals_spent + enemy_upgrade_gas_spent +
+		enemy_building_minerals_spent + enemy_minerals_on_hand + enemy_gas_on_hand + enemy_supply_total;
+
+
 	previous_enemy_worker_count = enemy_worker_count;//
 	previous_enemy_workers_on_gas = enemy_workers_on_gas;//
 	previous_enemy_workers_on_minerals = enemy_workers_on_minerals;//

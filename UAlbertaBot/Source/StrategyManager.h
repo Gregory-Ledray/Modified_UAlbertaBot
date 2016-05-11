@@ -6,6 +6,7 @@
 #include "InformationManager.h"
 #include "WorkerManager.h"
 #include "BuildOrder.h"
+#include <string>
 
 namespace UAlbertaBot
 {
@@ -55,13 +56,23 @@ class StrategyManager
 	const	double				    getUCBValue(const size_t & strategy) const;
 	const	bool				    shouldExpandNow() const;
     const	MetaPairVector		    getProtossBuildOrderGoal() const;
-	const	MetaPairVector		    getTerranBuildOrderGoal() const;
+	const	MetaPairVector		    getTerranBuildOrderGoal();
 	const	MetaPairVector		    getZergBuildOrderGoal() const;
 
 public:
     
 	static	StrategyManager &	    Instance();
+	//my code starts
+			void					update();
 
+			int						enemy_heuristic;
+			int						terran_heuristic;
+			int						terran_military_count;
+			int						terran_military_array[8];
+			int						best_organism[8];
+			int						previous_frame;
+			bool					first_pass;
+	//my code ends
 			void				    onEnd(const bool isWinner);
             void                    addStrategy(const std::string & name, Strategy & strategy);
             void                    setLearnedStrategy();

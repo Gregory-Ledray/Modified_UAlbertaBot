@@ -2,8 +2,11 @@
 #include "StrategyManager.h"
 #include "UnitUtil.h"
 #include "AnalysisData.h"
+#include "Genetic.h"
+#include <string>
 
 using namespace UAlbertaBot;
+#define tolerance 2
 
 // constructor
 StrategyManager::StrategyManager()
@@ -100,6 +103,7 @@ const MetaPairVector StrategyManager::getBuildOrderGoal()
 	}
 	else if (myRace == BWAPI::Races::Terran)
 	{
+		//StrategyManager::update();
 		return getTerranBuildOrderGoal();
 	}
 	else if (myRace == BWAPI::Races::Zerg)
@@ -198,7 +202,7 @@ const MetaPairVector StrategyManager::getProtossBuildOrderGoal() const
 	return goal;
 }
 
-const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
+const MetaPairVector StrategyManager::getTerranBuildOrderGoal()
 {
 	// the goal to return
 	std::vector<MetaPair> goal;
@@ -214,41 +218,27 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal() const
 		+ UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode);
 	int numBay = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Engineering_Bay);
 
-	if (Config::Strategy::StrategyName == "Terran_MarineRush")
-	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 8));
+	//my code
+	terran_military_count = numWorkers + numCC + numMarines + numMedics + numWraith + numVultures
+		+ numGoliath + numTanks + numBay;
+	
+	//end of My code
 
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 3));
 		if (numMarines > 5)
 		{
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
 		}
-	}
-	else if (Config::Strategy::StrategyName == "Terran_4RaxMarines")
-	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 8));
-	}
-	else if (Config::Strategy::StrategyName == "Terran_VultureRush")
-	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture, numVultures + 8));
+		//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + best_organism[1]));
+		//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Wraith, numMarines + best_organism[2]));
+	//	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture, numVultures + best_organism[3]));
+		//if (best_organism[5] > 0)
+		//{
+		//	goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));
+		//}
+		//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, numTanks + best_organism[5]));
 
-		if (numVultures > 8)
-		{
-			goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));
-			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, 4));
-		}
-	}
-	else if (Config::Strategy::StrategyName == "Terran_TankPush")
-	{
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, 6));
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath, numGoliath + 6));
-		goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));
-	}
-	else
-	{
-		BWAPI::Broodwar->printf("Warning: No build order goal for Terran Strategy: %s", Config::Strategy::StrategyName.c_str());
-	}
-
-
+	//	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath, numGoliath + best_organism[4]));
 
 	if (shouldExpandNow())
 	{
@@ -478,3 +468,38 @@ void StrategyManager::setLearnedStrategy()
 
 	Config::Strategy::StrategyName = bestUCBStrategy;
 }
+
+//mycode starts
+void StrategyManager::update()
+{
+\
+//only works for Terran, I would check the race, but this is done earlier
+	//calculate how we are doing
+	int frame = BWAPI::Broodwar->getFrameCount();
+	int heuristic = enemy_heuristic - terran_heuristic - terran_military_count;
+
+	terran_military_array[0] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Marine);
+	terran_military_array[1] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Medic);
+	terran_military_array[2] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Wraith);
+	terran_military_array[3] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Vulture);
+	terran_military_array[4] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Goliath);
+	terran_military_array[5] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode)
+		+ UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Siege_Tank_Siege_Mode);
+	//terran_military_array[6] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Ghost);
+	//terran_military_array[7] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Dropship);
+	//terran_military_array[8] = UnitUtil::GetAllUnitCount(BWAPI::UnitTypes::Terran_Battlecruiser);
+
+	if (!first_pass)
+	{
+		Genetic::Instance().InitializeOrganisms(terran_heuristic, enemy_heuristic);
+		first_pass = true;
+	}
+	if (heuristic > (tolerance) && frame > previous_frame)// if we are doing very poorly, change stategy randomly
+	{
+		terran_heuristic += terran_military_count;
+		Genetic::Instance().EvaluateOrganisms(terran_heuristic, enemy_heuristic);
+		Genetic::Instance().ProduceNextGeneration();
+		previous_frame = frame + 720;
+	}
+}
+//my code ends

@@ -30,6 +30,12 @@ void GameCommander::update()
 	//MapTools::Instance().update();
 	_timerManager.stopTimer(TimerManager::MapTools);
 
+	//My code
+	//_timerManager.startTimer(TimerManager::Strategy);
+	//StrategyManager::Instance().update();
+	//_timerManager.stopTimer(TimerManager::Strategy);
+	// my code ends
+
 	_timerManager.startTimer(TimerManager::Search);
 	BOSSManager::Instance().update(35 - _timerManager.getTotalElapsed(TimerManager::Search));
 	_timerManager.stopTimer(TimerManager::Search);
