@@ -5,8 +5,10 @@
 #include "Genetic.h"
 #include "UnitUtil.h"
 #include "UnitData.h"
+#include <time.h> 
 
 using namespace UAlbertaBot;
+
 
 Genetic::Genetic()
 {
@@ -21,14 +23,16 @@ Genetic & Genetic::Instance()
 void Genetic::InitializeOrganisms(int terran_heuristic, int enemy_heuristic){
 	int organism;
 	int gene;
+	srand(time(NULL));
 	int max_unit_quantities[6] = {
-		3,//marine
-		3,//medic
-		3,//wraith
-		3,//vulture
-		3,//goliath
-		3//tank
+		10,//marine
+		10,//medic
+		10,//wraith
+		16,//vulture
+		16,//goliath
+		16//tank
 	};
+
 	//terran_units[6] = {BWAPI::UnitTypes::Terran_Marine, BWAPI::UnitTypes::Terran_Medic,
 	//	BWAPI::UnitTypes::Terran_Wraith, BWAPI::UnitTypes::Terran_Vulture,
 	//	BWAPI::UnitTypes::Terran_Goliath, BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode };
@@ -36,7 +40,7 @@ void Genetic::InitializeOrganisms(int terran_heuristic, int enemy_heuristic){
 	// initialize the normal organisms
 	for (organism = 0; organism < NUMBER_ORGANISMS; ++organism){
 		for (gene = 0; gene < NUMBER_GENES; ++gene){
-			currentGeneration[organism][gene] = (abs(rand()) % max_unit_quantities[gene]);
+			currentGeneration[organism][gene] = max_unit_quantities[gene];//(abs(rand()) % max_unit_quantities[gene]);
 		}
 		for (organism = 0; organism < NUMBER_ORGANISMS; ++organism){
 			currentGeneration[organism][gene + 1] = (enemy_heuristic - terran_heuristic);
@@ -46,11 +50,18 @@ void Genetic::InitializeOrganisms(int terran_heuristic, int enemy_heuristic){
 void Genetic::EvaluateOrganisms(int terran_heuristic, int enemy_heuristic){
 	int organism;
 	int gene;
-
+	int max_unit_quantities[6] = {
+		10,//marine
+		10,//medic
+		10,//wraith
+		16,//vulture
+		16,//goliath
+		16//tank
+	};
 
 	for (organism = 0; organism<NUMBER_ORGANISMS; ++organism){
 		for (gene = 0; gene<NUMBER_GENES; ++gene){
-			currentGeneration[organism][NUMBER_GENES + 1] -= currentGeneration[organism][gene] * (
+			currentGeneration[organism][NUMBER_GENES + 1] = enemy_heuristic - terran_heuristic + currentGeneration[organism][gene] * (
 				currentGeneration[organism][gene]);// +terran_units[gene].supplyRequired();// +
 				//terran_units[gene].defaultOreCost() + terran_units[gene].defaultGasCost());
 		}
@@ -65,14 +76,13 @@ void Genetic::ProduceNextGeneration(){
 	int crossoverPoint;
 	int mutateThisGene;
 	int max_unit_quantities[6] = {
-		3,//marine
-		3,//medic
-		3,//wraith
-		3,//vulture
-		3,//goliath
-		3//tank
+		10,//marine
+		10,//medic
+		10,//wraith
+		16,//vulture
+		16,//goliath
+		16//tank
 	};
-
 
 	for (organism = 0; organism < NUMBER_ORGANISMS; ++organism){
 		parentOne = SelectOneOrganism();

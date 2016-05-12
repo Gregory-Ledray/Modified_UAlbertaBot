@@ -169,8 +169,12 @@ void AnalysisData::writeData()
 
 		data_file.close();
 
-		StrategyManager::Instance().terran_heuristic = military_minerals_spent + military_gas_spent + upgrade_minerals_spent +
-			upgrade_gas_spent + building_minerals_spent + worker_count * 50;
+		int heu = military_minerals_spent + military_gas_spent + upgrade_minerals_spent +
+			upgrade_gas_spent + building_minerals_spent + worker_count * 50 - minerals_on_hand;
+
+		if (heu < 1)
+			heu = 1;
+		StrategyManager::Instance().terran_heuristic = heu;
 	}
 	else UAB_ASSERT(true, "Couldn't open the file\n");
 }
@@ -311,7 +315,6 @@ void AnalysisData::writeScoutData()
 	{
 		enemy_worker_count = previous_enemy_worker_count;
 	}
-	/*
 	if (previous_enemy_building_minerals_spent > enemy_building_minerals_spent)
 	{
 	enemy_building_minerals_spent = previous_enemy_building_minerals_spent;
@@ -321,12 +324,11 @@ void AnalysisData::writeScoutData()
 	enemy_supply_used = previous_enemy_supply_used;
 	}
 	
-	
 	if (previous_enemy_military_gas_spent > enemy_military_gas_spent)
 		enemy_military_gas_spent = previous_enemy_military_gas_spent;
 	if (previous_enemy_military_minerals_spent > enemy_military_minerals_spent)
 		enemy_military_minerals_spent = previous_enemy_military_minerals_spent;
-		*/
+
 	bool dont_output = false;
 
 	
@@ -378,9 +380,14 @@ void AnalysisData::writeScoutData()
 		data_file.close();
 	}
 
-	StrategyManager::Instance().enemy_heuristic = enemy_worker_count*50 + enemy_military_minerals_spent +
+	int en_heu = enemy_worker_count * 50 + enemy_military_minerals_spent +
 		enemy_military_gas_spent + enemy_upgrade_minerals_spent + enemy_upgrade_gas_spent +
 		enemy_building_minerals_spent;
+
+	if (en_heu < 1)
+		en_heu = 1;
+
+	StrategyManager::Instance().enemy_heuristic = en_heu;
 
 
 	previous_enemy_worker_count = enemy_worker_count;//

@@ -224,21 +224,21 @@ const MetaPairVector StrategyManager::getTerranBuildOrderGoal()
 	
 	//end of My code
 
-		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + 6 + (best_organism[0] %3)));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Marine, numMarines + (best_organism[0] %3)));
 		if (numMarines > 5)
 		{
 			goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Engineering_Bay, 1));
 		}
-		//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + best_organism[1]));
-		//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Wraith, numMarines + best_organism[2]));
-	//	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture, numVultures + best_organism[3]));
-		//if (best_organism[5] > 0)
-		//{
-		//	goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));
-		//}
-		//goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, numTanks + best_organism[5]));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Medic, numMedics + best_organism[1]));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Wraith, numMarines + best_organism[2]));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Vulture, numVultures + best_organism[3]));
+		if (best_organism[5] > 0)
+		{
+			goal.push_back(std::pair<MetaType, int>(BWAPI::TechTypes::Tank_Siege_Mode, 1));
+		}
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Siege_Tank_Tank_Mode, numTanks + best_organism[5]));
 
-	//	goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath, numGoliath + best_organism[4]));
+		goal.push_back(std::pair<MetaType, int>(BWAPI::UnitTypes::Terran_Goliath, numGoliath + best_organism[4]));
 
 	if (shouldExpandNow())
 	{
@@ -498,11 +498,11 @@ void StrategyManager::update()
 		//terran_heuristic += terran_military_count;
 		Genetic::Instance().EvaluateOrganisms(terran_heuristic, enemy_heuristic);
 		Genetic::Instance().ProduceNextGeneration();
-		previous_frame = frame + 720;
+		previous_frame = frame + 80;
 	}
 }
 bool StrategyManager::first_pass = false;
-int StrategyManager::previous_frame = 0.;
+int StrategyManager::previous_frame = 0;
 int	StrategyManager::enemy_heuristic = 0;
 int	StrategyManager::terran_heuristic = 0;
 //my code ends

@@ -32,5 +32,6 @@ namespace UAlbertaBot
 		void EvaluateOrganisms(int terran_heuristic, int enemy_heuristic);
 		void ProduceNextGeneration();
 		int SelectOneOrganism();
+		int max_unit_quantities[6];
 	};
 }
