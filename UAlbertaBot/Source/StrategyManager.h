@@ -65,13 +65,13 @@ public:
 	//my code starts
 			void					update();
 
-			int						enemy_heuristic;
-			int						terran_heuristic;
+	static	int						enemy_heuristic;
+	static	int						terran_heuristic;
 			int						terran_military_count;
 			int						terran_military_array[8];
 			int						best_organism[8];
-			int						previous_frame;
-			bool					first_pass;
+	static	int						previous_frame;
+	static	bool					first_pass;
 	//my code ends
 			void				    onEnd(const bool isWinner);
             void                    addStrategy(const std::string & name, Strategy & strategy);

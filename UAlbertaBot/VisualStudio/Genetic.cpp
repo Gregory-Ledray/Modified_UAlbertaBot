@@ -7,11 +7,6 @@
 #include "UnitData.h"
 
 using namespace UAlbertaBot;
-//heavily modified:
-// file: geneticAlgorithm1.c
-// by: John LeFlohic
-// use: simulates a species' convergence to a model
-// made: February 24, 1999
 
 Genetic::Genetic()
 {
@@ -139,5 +134,5 @@ void Genetic::ProduceNextGeneration(){
 		for (organism = 0; organism<NUMBER_ORGANISMS; ++organism){
 			if (currentGeneration[organism][NUMBER_GENES + 1] >= randomSelectPoint) return organism;
 		}//returns first organism better than a random organism.
+		return organism;
 	}
-	//End of LeFlohic's code
